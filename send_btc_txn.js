@@ -2,6 +2,7 @@ import { Ident } from "provide-js";
 import { Vault } from "provide-js";
 import 'dotenv/config';
 import bitcoin from "bitcoinjs-lib";
+import axios from "axios";
 
 //get params from cli and other defaults
 var btc_recipient = process.argv[2];
@@ -46,6 +47,8 @@ var MY_VAULT_ID = MY_VAULTS.results[0].id;
 const MY_VAULT_KEY_IDS = await VAULT_PROXY.fetchVaultKeys(MY_VAULT_ID);
 var MY_WALLET = MY_VAULT_KEY_IDS.results.filter(vaultkeys => vaultkeys.spec === "secp256k1");
 
+console.log(MY_WALLET);
+
 //see https://developer.bitcoin.org/reference/rpc/createrawtransaction.html
 //create a hex of a raw transaction
 
@@ -87,9 +90,13 @@ axios.post(bitcoin_rpc_server, data, { headers })
     console.error('Error:', error.message);
 });
 
+console.log("raw txn:");
+console.log(rawTxn);
 
 //get a signed hex of the txn from vault
 var signed_btc_txn = await VAULT_PROXY.signMessage(MY_VAULT_ID, MY_WALLET.id,rawTxn);
+
+console.log(signed_btc_txn);
 
 // send the transaction
 //curl --user myusername --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "sendrawtransaction", "params": ["signedhex"]}' -H 'content-type: text/plain;' http://127.0.0.1:8332/

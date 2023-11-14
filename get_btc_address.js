@@ -36,7 +36,8 @@ const MY_WALLET_KEY_ID = MY_WALLET[0].id;
 const MY_PUBLIC_KEY = MY_WALLET[0].publicKey.slice(2);
 
 // Mainnet or Testnet
-const network = bitcoin.networks.bitcoin;
+const selected_network = "testnet";
+const network = bitcoin.networks.testnet;
 
 // Convert the uncompressed public key to a buffer
 const publicKeyBuffer = Buffer.from(MY_PUBLIC_KEY, 'hex');
