@@ -4,6 +4,7 @@ import 'dotenv/config';
 import bitcoin from "bitcoinjs-lib";
 import axios from "axios";
 import bitcore from "bitcore-lib";
+import keccak256 from "keccak256";
 
 //get params from cli and other defaults
 var btc_recipient = process.argv[2];
@@ -60,7 +61,7 @@ let txb = new bitcoin.Transaction(network);
 txb.addInput(txidBuffer,0);
 const btc_recipientBuffer = Buffer.from(btc_recipient, 'hex');
 txb.addOutput(btc_recipientBuffer,amount);
-let tx_hex = txb.toHex();
+let tx_hex = keccak256(txb.toHex()).toString('hex');
 console.log(tx_hex);
 //let psbt = new bitcoin.Psbt(network);
 
@@ -124,7 +125,7 @@ console.log(rawTxn);
 */
 
 //get a signed hex of the txn from vault
-var signed_btc_txn = await VAULT_PROXY.signMessage(MY_VAULT_ID, MY_WALLET.id,tx_hex);
+var signed_btc_txn = await VAULT_PROXY.signMessage(MY_VAULT_ID, MY_WALLET[0].id,tx_hex);
 
 console.log(signed_btc_txn);
 
@@ -135,15 +136,17 @@ const signed_data = {
     jsonrpc : '1.0',
     id : 'curltest',
     method : "sendrawtransaction",
-    params : [signed_btc_txn.data]
+    params : [signed_btc_txn.signature]
+};
+
+const headers = {
+    'Content-Type': 'application/json'
 };
 
 // Broadcast the transaction
-/*
 const broadcastUrl = bitcoin_rpc_server;
 axios.post(broadcastUrl, signed_data, {headers}).then((response) => {
   console.log('Transaction broadcasted successfully:', response.data);
 }).catch((error) => {
   console.error('Error broadcasting transaction:', error);
 });
-*/
