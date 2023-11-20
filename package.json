@@ -19,6 +19,7 @@
     "base58-js": "^2.0.0",
     "bitcoin-cli": "^0.0.3",
     "bitcoinjs-lib": "^6.1.5",
+    "bitcore-lib": "^10.0.17",
     "bs58": "^5.0.0",
     "process-env": "^2.0.2",
     "provide-js": "^1.10.0",
