@@ -61,8 +61,9 @@ let txb = new bitcoin.Transaction(network);
 txb.addInput(txidBuffer,0);
 const btc_recipientBuffer = Buffer.from(btc_recipient, 'hex');
 txb.addOutput(btc_recipientBuffer,amount);
+var txn_hash_for_signature = txb.hashForSignature(0, bitcoin.Transaction.SIGHASH_ALL);
 let tx_hex = keccak256(txb.toHex()).toString('hex');
-console.log(tx_hex);
+console.log(txn_hash_for_signature);
 //let psbt = new bitcoin.Psbt(network);
 
 //get balance
@@ -125,7 +126,7 @@ console.log(rawTxn);
 */
 
 //get a signed hex of the txn from vault
-var signed_btc_txn = await VAULT_PROXY.signMessage(MY_VAULT_ID, MY_WALLET[0].id,tx_hex);
+var signed_btc_txn = await VAULT_PROXY.signMessage(MY_VAULT_ID, MY_WALLET[0].id,txn_hash_for_signature);
 
 console.log(signed_btc_txn);
 
